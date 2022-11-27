@@ -1,0 +1,101 @@
+--^^^^^^video 4^^^^^^--
+
+--1
+--select P.ProductID,C.CategoryID,C.CategoryName
+--from Categories as C
+--inner join Products as P
+--on C.CategoryID = P.CategoryID
+
+--2
+--select P.ProductID,P.ProductName,C.CategoryName
+--from Categories as C
+--inner join Products as P
+--on C.CategoryID = P.CategoryID
+--where ProductID>50
+
+--3
+--select P.ProductName,S.CompanyName
+--from Suppliers as S
+--inner join Products as P
+--on S.SupplierID = P.SupplierID
+
+--4
+--select P.ProductName,S.CompanyName
+--from Suppliers as S
+--inner join Products as P
+--on S.SupplierID = P.SupplierID 
+--where S.Country like 'usa' or S.Country like 'USA'
+
+--5
+--select P.ProductName,S.CompanyName
+--from Suppliers as S
+--inner join Products as P
+--on S.SupplierID = P.SupplierID 
+--where S.Country not like 'Germany'
+
+--6
+--select CompanyName from Suppliers where HomePage is not null
+
+--7
+--select P.ProductName,S.CompanyName
+--from Suppliers as S
+--inner join Products as P
+--on S.SupplierID = P.SupplierID 
+--where S.HomePage is not null
+
+--8
+--select OrderDate from Orders where OrderID = 10408
+
+--9
+--select P.ProductName
+--from [Order Details] as OD
+--inner join Products as P
+--on OD.ProductID = P.ProductID
+--where OD.OrderID = 10408
+
+--10
+--select distinct S.CompanyName
+--from [Order Details] as OD
+--inner join Products as P on P.ProductID = OD.ProductID
+--inner join Suppliers as S on S.SupplierID = P.SupplierID
+--where OD.OrderID = 10408
+
+--^^^^^^video 5^^^^^^--
+
+--1
+--select P.ProductID,P.ProductName into Order1 from Orders as O
+--inner join [Order Details] as OD on O.OrderID = OD.OrderID
+--inner join Products as P on OD.ProductID = P.ProductID
+--where O.ShipVia = 1
+
+--select top 5* from Order1
+
+--drop table Order1
+
+--2
+--select distinct P.ProductID,P.ProductName into Order2 from Orders as O
+--inner join [Order Details] as OD on O.OrderID = OD.OrderID
+--inner join Products as P on OD.ProductID = P.ProductID
+--where O.ShipVia = 2 and P.ProductName not like 'E%' and P.ProductName not like '%e%' and P.ProductName not like '%e'
+
+--select * from Order2
+
+--drop table Order2
+
+--3
+--select distinct O.OrderID, O.CustomerID, S.CompanyName into OrderA from Orders as O
+--inner join [Order Details] as OD on OD.OrderID = O.OrderID
+--inner join Products as P on P.ProductID = OD.ProductID
+--inner join Suppliers as S on S.SupplierID = P.SupplierID
+--where O.CustomerID like 'A%' or O.CustomerID like '%A%' or O.CustomerID like '%A'
+
+--select * from OrderA
+
+--drop table OrderA
+
+--4
+--select C.ContactName from Customers as C
+--inner join Orders as O on O.CustomerID = C.CustomerID
+--inner join [Order Details] as OD on OD.OrderID = O.OrderID
+--inner join Products as P on P.ProductID = OD.ProductID
+--where P.ProductName like 'L%'
