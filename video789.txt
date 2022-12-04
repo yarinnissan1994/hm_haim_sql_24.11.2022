@@ -1,0 +1,148 @@
+------ 7-1 ------
+--select *,
+--case
+--	when [Country] like 'A%' then 'AAA'
+--	when [Country] like 'B%' then 'BBB'
+--	when [Country] like 'C%' then 'CCC'
+--	else 'ZZZ'
+--end as COUNTRY_NICK
+--from [dbo].[Customers]
+
+------ 7-2 ------
+--select *,
+--case
+--	when [UnitPrice] < 5 then 'Cheap'
+--	when [UnitPrice] between 5 and 10 then 'Medium'
+--	when [UnitPrice] > 100 then 'Expensive'
+--	else 'Normal'
+--end as RecommendedPrice
+--from [dbo].[Products]
+
+------ 8-2 ------
+--select [CustomerID] from [Orders]
+--where [OrderID] in (select [OrderID] from [Order Details] where [UnitPrice] = 14)
+
+------ 8-3 ------
+--select * from [dbo].[Customers]
+--select * from [dbo].[Employees]
+
+--- option A ---
+--select C.City, C.ContactName, E.LastName, E.FirstName into CityCE from Customers as C
+--inner join Employees as E on E.City = C.City where E.City like 'Seattle' or E.City like 'New York' or E.City like 'Los Angeles'
+--select * from CityCE
+--drop table CityCE
+
+--- option B ---
+--select C.City, C.ContactName, E.LastName, E.FirstName from Customers as C
+--inner join Employees as E on E.City = C.City 
+--where C.City in (select City from Employees where Employees.City like 'Seattle' or Employees.City like 'New York' or Employees.City like 'Los Angeles')
+
+------ 8-4 ------
+--select * from [dbo].[Suppliers]
+--select * from [dbo].[Products]
+--select [ProductName] from Products
+--where [SupplierID] in (select SupplierID from [dbo].[Suppliers] where [Country] like 'USA' or [Country] like 'UK') and [UnitPrice] > 30
+
+----- 8-6 ------
+
+--create PROCEDURE OrderDetailsById
+--	@Param1 int
+--AS
+--BEGIN
+--	select * from [dbo].[Order Details] where [OrderID] = @Param1
+--END
+--GO
+
+--exec OrderDetailsById @Param1=10255
+--drop PROCEDURE OrderDetailsById
+
+----- 8-7 ------
+--create PROCEDURE ProductOrdersById
+--	@Param1 int
+--AS
+--BEGIN
+--	select distinct [OrderID] from [dbo].[Order Details] where [ProductID] = @Param1
+--END
+--GO
+
+--exec ProductOrdersById @Param1=16
+--drop PROCEDURE ProductOrdersById
+
+----- 8-8 ------
+--create PROCEDURE ProductByPrice
+--	@Param1 money
+--AS
+--BEGIN
+--	select distinct [ProductName] from [dbo].[Products] where [UnitPrice] = @Param1
+--END
+--GO
+
+--exec ProductByPrice @Param1=2.50
+--drop PROCEDURE ProductByPrice
+
+----- 8-9 ------
+--create PROCEDURE OrderByShippers
+--	@Param1 int
+--AS
+--BEGIN
+--	select distinct [OrderID] from [dbo].[Orders] where [ShipVia] = @Param1
+--END
+--GO
+
+--exec OrderByShippers @Param1=4
+--drop PROCEDURE OrderByShippers
+
+----- agregation(9)-4 ------
+--select [UnitPrice], 
+--ProductsCount = COUNT(*),
+--AveragePricing = AVG([UnitPrice]), 
+--TotalPriceBYGroup = sum([UnitPrice]),
+--MinStock = Min([UnitsInStock]),
+--MaxStock = Max([UnitsInStock])
+--from [dbo].[Products]
+--where [UnitPrice] between 10 and 50
+--group by [UnitPrice]
+--having sum([UnitPrice]) > 30
+--order by MinStock asc
+
+----- agregation(9)-5 ------
+--select max(UnitPrice) from [dbo].[Products]
+
+----- agregation(9)-6 ------
+--select AVG(UnitPrice) from [dbo].[Products]
+
+----- agregation(9)-7 ------
+--select MIN(UnitPrice) from [dbo].[Products]
+
+----- agregation(9)-8 ------
+--select [ProductName] from [dbo].[Products]
+--where UnitPrice in (select max(UnitPrice) from [Products])
+
+----- agregation(9)-8 ------
+--select [ProductName] from [dbo].[Products]
+--where UnitPrice in (select min(UnitPrice) from [Products])
+
+----- agregation(9)-10 ------
+--create PROCEDURE OrdersToCountry
+--	@Param1 nvarchar(max)
+--AS
+--BEGIN
+--	select count(ShipCountry) as DeliveryCount from [dbo].[Orders] where [ShipCountry] = @Param1
+--END
+--GO
+
+--exec OrdersToCountry @Param1='UK'
+--drop PROCEDURE OrdersToCountry
+
+----- agregation(9)-11 ------
+--create PROCEDURE ProductsToCountry
+--	@Param1 nvarchar(max)
+--AS
+--BEGIN
+--	select count(OrderID) as ProductsCount from [Order Details] 
+--	where OrderID in (select OrderID from [Orders] where [ShipCountry] = @Param1)
+--END
+--GO
+
+--exec ProductsToCountry @Param1='Italy'
+--drop PROCEDURE ProductsToCountry
