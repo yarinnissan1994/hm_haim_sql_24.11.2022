@@ -1,0 +1,80 @@
+------- 1 -------
+select * from [Products]
+where [UnitPrice] between 30 and 40
+
+------- 2 -------
+select * from [Products]
+where [CategoryID] = 2
+
+------- 3 -------
+select * from [Products]
+where [CategoryID] in 
+(select [CategoryID] from [Categories] 
+where [Description] like 'S%' or [Description] like '%s%' or [Description] like '%s')
+order by [ProductName] asc
+
+------- 4 -------
+select distinct [ProductName] from [Products]
+where [ProductID] in 
+(select [ProductID] from [Order Details] 
+where [OrderID] in 
+(select [OrderID] from [Orders] 
+where [CustomerID] like 'ALFKI'))
+
+------- 5 -------
+select * from [Orders]
+where [ShipCountry] like 'Brazil' or [ShipCity] like 'London'
+
+------- 6 -------
+select [ContactName] from [Customers]
+where [CustomerID] in 
+(select [CustomerID] from [Orders] where [ShipVia] = 3)
+
+------- 7 -------
+create PROCEDURE ProductsByOrderID
+	@orderID int
+AS
+BEGIN
+	select P.ProductName, P.UnitPrice
+	from [Order Details] as OD
+	inner join Products as P
+	on OD.ProductID = P.ProductID
+	where OD.OrderID = @orderID
+
+	select sum(P.UnitPrice) as OrderFullPrice
+	from [Order Details] as OD
+	inner join Products as P
+	on OD.ProductID = P.ProductID
+	where OD.OrderID = @orderID
+END
+GO
+
+exec ProductsByOrderID @orderID=10444
+drop PROCEDURE ProductsByOrderID
+
+------- 8 -------
+select 
+[CustomerID],
+[EmployeeID],
+[ShipVia],
+[Freight],
+[ShipName],
+[ShipAddress],
+[ShipCity],
+[ShipRegion],
+[ShipPostalCode],
+[ShipCountry]
+from [Orders]
+where [CustomerID] like 'B%' and [ShipVia] = 1 and [ShipName] like 'B%' AND ([EmployeeID] = 2 or [EmployeeID] = 5)
+
+------- 9 -------
+select OD.OrderID, OD.ProductID, OD.UnitPrice, OD.Quantity, OD.Discount, O.OrderDate, O.EmployeeID, O.CustomerID from [Orders] as O
+inner join [Order Details] as OD on O.OrderID != OD.OrderID or O.OrderID = OD.OrderID
+where OD.OrderID = 10248 and O.CustomerID like 'VINET'
+order by OD.UnitPrice asc, O.EmployeeID asc
+
+------- 10 -------
+select [CustomerID], [Region], [Country] from [Customers]
+where [Country] like 'France' or [Country] like 'Canada'
+
+
